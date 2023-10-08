@@ -8,7 +8,7 @@ namespace Cynthia.Card
     public static class GwentMap
     {
         //更新CardMap内容请务必将CardMapVersion更新
-        public static Version CardMapVersion { get; } = new Version(1, 0, 0, 78);
+        public static Version CardMapVersion { get; } = new Version(1, 0, 0, 79);
         public static IDictionary<string, int> CardIdMap { get; set; }
         public static string[] CardIdIndexMap { get; set; }
 
@@ -11183,7 +11183,7 @@ namespace Cynthia.Card
                     IsDerive = false,
                     Categories = new Categorie[] { Categorie.Beast },
                     Flavor = "“样子有点像浑身没毛的鹿首魔，鼻子能拖到地上。”\n“什么？不，你这是在胡扯”",
-                    Info = "摧毁己方半场单排所有单位的护甲，并造成扣除护甲值的伤害。",
+                    Info = "摧毁自身及相邻单位的护甲，并造成扣除护甲值的伤害。",
                     CardArtsId = "d19990000",
                 }
             },
@@ -11202,7 +11202,7 @@ namespace Cynthia.Card
                     IsCountdown = false,
                     Categories = new Categorie[] {Categorie.Soldier,Categorie.Cursed,Categorie.Cultist},
                     Flavor = "能活够一定年岁的维尔卡战士会赢得整个家族的尊敬。",
-                    Info = "回合结束时，复活至随机排，并获得1点强化。",
+                    Info = "回合结束时，复活至随机排，战力不高于13点时获得1点强化。",
                     CardArtsId = "d16710000",
                 }
             },
@@ -11222,7 +11222,7 @@ namespace Cynthia.Card
                     IsDerive = false,
                     Categories = new Categorie[] { Categorie.Special },
                     Flavor = "",
-                    Info = "对一个敌军随机单位造成4点伤害。被丢弃时，再次触发此能力，并将2张“恐狼勇士”加入牌组。",
+                    Info = "对一个敌军随机单位造成4点伤害。被丢弃时，再次触发此能力，并将1张“恐狼勇士”加入牌组。",
                     CardArtsId = "d19640000",
                 }
             },
@@ -11232,7 +11232,7 @@ namespace Cynthia.Card
                 {
                     CardId = "70040",
                     Name = "恐狼勇士",
-                    Strength = 8,
+                    Strength = 10,
                     Group = Group.Copper,
                     Faction = Faction.Skellige,
                     CardUseInfo = CardUseInfo.MyRow,
@@ -11242,7 +11242,7 @@ namespace Cynthia.Card
                     IsDerive = true,
                     Categories = new Categorie[] { Categorie.Soldier,Categorie.Token},
                     Flavor = "",
-                    Info = "对一个敌军随机单位造成2点伤害。被丢弃时，再次触发此能力，并将1张“恐狼勇士”加入牌组底部。",
+                    Info = "对一个敌军随机单位造成4点伤害。被丢弃时，再次触发此能力，并将1张“恐狼勇士”加入牌组底部。",
                     CardArtsId = "d19620000",
                 }
             },
@@ -11344,7 +11344,7 @@ namespace Cynthia.Card
                     Categories = new Categorie[]{ Categorie.Leader,Categorie.Lyria},
                     CrewCount = 1,
                     Flavor = "莱里亚女王米薇闷闷不乐地摆弄着项链上的硕大红宝石，美丽而丰满的嘴唇不时扭曲起来。",
-                    Info = "使己方半场、手牌、牌库各1个单位获得5点增益。操控。",
+                    Info = "使己方半场、手牌、牌库各1个单位获得5、4、3点增益。操控。",
                     CardArtsId = "d15660000",
                 }
             },
@@ -11961,7 +11961,7 @@ namespace Cynthia.Card
                 {
                     CardId ="70118",
                     Name="莱里亚镰刀手",
-                    Strength=5,
+                    Strength=9,
                     Group=Group.Copper,
                     Faction = Faction.NorthernRealms,
                     CardUseInfo = CardUseInfo.MyRow,
@@ -12821,7 +12821,47 @@ namespace Cynthia.Card
                     Info = "活了六百五十多年后，没什么能给我惊喜。",
                     CardArtsId = "d21870000",
                 }
-            }
+            },
+            {
+                "70094",//莱里亚骑兵 Lyrian Cavalry
+                new GwentCard()
+                {
+                    CardId ="70094",
+                    Name="莱里亚骑兵",
+                    Strength=7,
+                    Group=Group.Copper,
+                    Faction = Faction.NorthernRealms,
+                    CardUseInfo = CardUseInfo.MyRow,
+                    CardType = CardType.Unit,
+                    IsDoomed = false,
+                    IsCountdown = false,
+                    IsDerive = false,
+                    Categories = new Categorie[]{Categorie.Lyria,Categorie.Soldier},
+                    Flavor = "骑士的价值不亚于他的骏马。而吕梁马是欧洲大陆最好的马之一。",
+                    Info = "自身获得卡组里一张单位卡增益数值等额的增益。",
+                    CardArtsId = "d15590000",
+                }
+            },
+            {
+                "70095",//莱里亚重弩手 Lyrian Arbalest
+                new GwentCard()
+                {
+                    CardId ="70095",
+                    Name="莱里亚重弩手",
+                    Strength=8,
+                    Group=Group.Copper,
+                    Faction = Faction.NorthernRealms,
+                    CardUseInfo = CardUseInfo.MyRow,
+                    CardType = CardType.Unit,
+                    IsDoomed = false,
+                    IsCountdown = false,
+                    IsDerive = false,
+                    Categories = new Categorie[]{Categorie.Lyria,Categorie.Soldier},
+                    Flavor = "我能在百步之外找到靶心！也许我的第一枪就打不准......",
+                    Info = "对一个战力低于自身的单位造成2者战力差的伤害，对大于等于自身战力的单位不造成伤害",
+                    CardArtsId = "d15410000",
+                }
+            },
         };
     }
 }

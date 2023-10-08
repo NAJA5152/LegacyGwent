@@ -3088,7 +3088,7 @@
           },
           "70033": {
               "Name": "Słoń Bojowy",
-              "Info": "Rozmieszczenie: Zniszcz pancerz wszystkich jednostek w tym rzędzie. Zadaj obrażenia równe ilości zniszczonego pancerza.",
+              "Info": "Rozmieszczenie: Zniszcz pancerz tej i jednostki sąsiadujące. Zadaj obrażenia równe ilości zniszczonego pancerza.",
               "Flavor": ""
           },
           "70038": {
@@ -3098,12 +3098,12 @@
           },
           "70039": {
               "Name": "Pazur Wilka",
-              "Info": "Zadaj 4 pkt obrażeń losowemu wrogowi. Kiedy odrzucisz te kartę, aktywuj jej Rozmieszczenie i wtasuj 2 wilczych wojowników do Twojej talii./n(Wilczy Wojownik; 8 pkt siły; Rozmieszczenie: Zadaj 2 pkt obrażeń losowemu wrogowi. Kiedy odrzucisz tę kartę aktywuj jej Rozmieszczenie i wtasuj kopie tej karty na spód Twojej talii.",
+              "Info": "Zadaj 4 pkt obrażeń losowemu wrogowi. Kiedy odrzucisz te kartę, aktywuj jej Rozmieszczenie i wtasuj 1 wilczych wojowników do Twojej talii./n(Wilczy Wojownik; 10 pkt siły; Rozmieszczenie: Zadaj 4 pkt obrażeń losowemu wrogowi. Kiedy odrzucisz tę kartę aktywuj jej Rozmieszczenie i wtasuj kopie tej karty na spód Twojej talii.",
               "Flavor": ""
           },
           "70040": {
               "Name": "Wilczy Wojownik",
-              "Info": "Rozmieszczenie: Zadaj 2 pkt obrażeń losowemu wrogowi. Kiedy odrzucisz tę kartę aktywuj jej Rozmieszczenie i wtasuj kopie tej karty na spód Twojej talii.",
+              "Info": "Rozmieszczenie: Zadaj 4 pkt obrażeń losowemu wrogowi. Kiedy odrzucisz tę kartę aktywuj jej Rozmieszczenie i wtasuj kopie tej karty na spód Twojej talii.",
               "Flavor": ""
           },
           "70041": {
@@ -3128,7 +3128,7 @@
           },
           "70045": {
               "Name": "Meve",
-              "Info": "Rozmieszczenie: Wzmocnij sojusznika, jednostkę w ręcę i w talii o 5. Załoga.",
+              "Info": "Rozmieszczenie: Wzmocnij sojusznika, jednostkę w ręcę i w talii o 5,4,3. Załoga.",
               "Flavor": ""
           },
           "70046": {
@@ -3288,7 +3288,7 @@
           },
           "70118": {
               "Name": "Lyryjski Kosynier",
-              "Info": "Rozmieszczenie: Wzmocnij losową jednostę w Twojej tali o 3, następnie wzmocnij się o wartość wzmocnienia tej jednostki.",
+              "Info": "Rozmieszczenie: Wzmocnij jednostkę w talii o 4 pkt.",
               "Flavor": ""
           },
           "70119": {
@@ -3365,7 +3365,17 @@
               "Name": "Auberon:Conqueror",
               "Info": "He will conquer the world.",
               "Flavor": "After having lived over six hundred and fifty years, little remains to excite."
-        }
+        },
+        "70094": {
+            "Name": "Lyriańska kawaleria",
+            "Info": "Rozmieszczenie: wybierz jednostkę ze swojej talii i wzmocnij się o wartość, o jaką wzmocniona jest ta jednostka.",
+            "Flavor": "骑士的价值不亚于他的骏马。而吕梁马是欧洲大陆最好的马之一。"
+        },
+        "70095": {
+            "Name": "Lyrian Arbalest",
+            "Info": "Rozmieszczenie: Zadaj obrażenia wrogiej jednostce o Sile niższej niż własna, wykorzystując różnicę między Siłami obu kart.",
+            "Flavor": "我能在百步之外找到靶心！也许我的第一枪就打不准......"
+        }  
       }
   }
   
