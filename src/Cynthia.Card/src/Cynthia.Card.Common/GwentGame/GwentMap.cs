@@ -8,7 +8,7 @@ namespace Cynthia.Card
     public static class GwentMap
     {
         //更新CardMap内容请务必将CardMapVersion更新
-        public static Version CardMapVersion { get; } = new Version(1, 0, 0, 79);
+        public static Version CardMapVersion { get; } = new Version(1, 0, 0, 88);
         public static IDictionary<string, int> CardIdMap { get; set; }
         public static string[] CardIdIndexMap { get; set; }
 
@@ -11148,7 +11148,7 @@ namespace Cynthia.Card
                 }
             },
             {
-                "70032",//加斯科
+                "70032",//加斯科 Gascon
                 new GwentCard()
                 {
                     CardId = "70032",
@@ -11163,7 +11163,7 @@ namespace Cynthia.Card
                     IsDerive = false,
                     Categories = new Categorie[] { Categorie.Officer},
                     Flavor = "“你手下的人可就是史帕拉流亡军？你便是人称野狗公爵的那位？”",
-                    Info = "对自身造成2点伤害并随机移动一个未被移动的敌军单位，重复直至战力不足。若位于手牌、牌组：己方回合中，每有1个单位被移动，便获得1点增益。",
+                    Info = "选择一排，移动敌我双方这一排上的所有单位。若位于手牌、牌组：己方回合中，每有1个单位被移动，便获得1点增益。",
                     CardArtsId = "d15200000",
                 }
             },
@@ -11971,7 +11971,7 @@ namespace Cynthia.Card
                     IsDerive = false,
                     Categories = new Categorie[]{Categorie.Lyria,Categorie.Soldier},
                     Flavor = "",
-                    Info = "随机使牌组1个单位获得3点增益，然后自身获得等同于此单位增益量的增益。",
+                    Info = "使牌组1个单位获得4点增益。",
                     CardArtsId = "d14810000",
                 }
             },
@@ -12823,6 +12823,86 @@ namespace Cynthia.Card
                 }
             },
             {
+                "89004",//加斯科：铁隼之首 GasconIronFalcon
+                new GwentCard()
+                {
+                    CardId ="89004",
+                    Name="加斯科：铁隼之首",
+                    Strength=13,
+                    Group=Group.Leader,
+                    Faction = Faction.Neutral,
+                    CardUseInfo = CardUseInfo.MyRow,
+                    CardType = CardType.Unit,
+                    IsDoomed = false,
+                    IsCountdown = false,
+                    IsDerive = true,
+                    Categories = new Categorie[]{ Categorie.Soldier},
+                    Flavor = "干的是驾轻就熟的老行当，而且居然还有钱拿！",
+                    Info = "无法被魅惑;根据公正女神点数改变效果（0-9牌组增益、10-19随机天气、20-29摧毁最强单位）;保持手牌数接近;牌组为空会添加牌。",
+                    CardArtsId = "d19250000",
+                }
+            },
+            {
+                "89005",//铁隼步兵 IronFalconInfantry
+                new GwentCard()
+                {
+                    CardId ="89005",
+                    Name="铁隼步兵",
+                    Strength=12,
+                    Group=Group.Copper,
+                    Faction = Faction.Neutral,
+                    CardUseInfo = CardUseInfo.MyRow,
+                    CardType = CardType.Unit,
+                    IsDoomed = false,
+                    IsCountdown = false,
+                    IsDerive = true,
+                    Categories = new Categorie[]{ Categorie.Soldier},
+                    Flavor = "就算上战场也可得好好打扮！",
+                    Info = "若具有增益，则使增益翻倍。",
+                    CardArtsId = "d19480000",
+                }
+            },
+            {
+                "89006",//铁隼吟游诗人 IronFalconTroubadour
+                new GwentCard()
+                {
+                    CardId ="89006",
+                    Name="铁隼吟游诗人",
+                    Strength=6,
+                    Group=Group.Copper,
+                    Faction = Faction.Neutral,
+                    CardUseInfo = CardUseInfo.MyRow,
+                    CardType = CardType.Unit,
+                    IsDoomed = false,
+                    IsCountdown = false,
+                    IsDerive = true,
+                    Categories = new Categorie[]{ Categorie.Soldier},
+                    Flavor = "我的演奏甚至可以让丧事变喜事。",
+                    Info = "随机使1个友军单位获得1点增益，重复4次，场上每有1张同名牌额外重复4次。",
+                    CardArtsId = "d19490000",
+                }
+            },
+            {
+                "89007",//铁隼飞刀手 IronFalconKnifeJuggler
+                new GwentCard()
+                {
+                    CardId ="89007",
+                    Name="铁隼飞刀手",
+                    Strength=4,
+                    Group=Group.Copper,
+                    Faction = Faction.Neutral,
+                    CardUseInfo = CardUseInfo.MyRow,
+                    CardType = CardType.Unit,
+                    IsDoomed = false,
+                    IsCountdown = false,
+                    IsDerive = true,
+                    Categories = new Categorie[]{ Categorie.Soldier},
+                    Flavor = "一寸短，一寸险。刀子轻，扔得远。",
+                    Info = "生成1个自身相同战力的佚亡复制，并使场上的同名牌获得1点增益。",
+                    CardArtsId = "d19470000",
+                }
+            },
+            {
                 "70094",//莱里亚骑兵 Lyrian Cavalry
                 new GwentCard()
                 {
@@ -12843,6 +12923,26 @@ namespace Cynthia.Card
                 }
             },
             {
+                "89008",//训练新兵 SoldierTrain
+                new GwentCard()
+                {
+                    CardId ="89008",
+                    Name="训练新兵",
+                    Strength=3,
+                    Group=Group.Copper,
+                    Faction = Faction.Neutral,
+                    CardUseInfo = CardUseInfo.MyRow,
+                    CardType = CardType.Unit,
+                    IsDoomed = false,
+                    IsCountdown = false,
+                    IsDerive = true,
+                    Categories = new Categorie[]{ Categorie.Soldier},
+                    Flavor = "女神偶尔会庇护一些新兵。",
+                    Info = "对局开始时，获得等同于公正女神点数的强化。",
+                    CardArtsId = "c10003300",
+                }
+            },
+            {
                 "70095",//莱里亚重弩手 Lyrian Arbalest
                 new GwentCard()
                 {
@@ -12860,6 +12960,66 @@ namespace Cynthia.Card
                     Flavor = "我能在百步之外找到靶心！也许我的第一枪就打不准......",
                     Info = "对一个战力低于自身的单位造成2者战力差的伤害，对大于等于自身战力的单位不造成伤害",
                     CardArtsId = "d15410000",
+                }
+            },
+            {
+                "70096",//图尔赛克战船 Tuirseach Warship
+                new GwentCard()
+                {
+                    CardId ="70096",
+                    Name="图尔赛克战船",
+                    Strength=3,
+                    Group=Group.Copper,
+                    Faction = Faction.Skellige,
+                    CardUseInfo = CardUseInfo.MyRow,
+                    CardType = CardType.Unit,
+                    IsDoomed = false,
+                    IsCountdown = false,
+                    IsDerive = false,
+                    Categories = new Categorie[]{Categorie.ClanTuirseach,Categorie.Machine},
+                    Flavor = "xxxxx",
+                    Info = "选择一个单位，造成等同于自身基础战力的伤害",
+                    CardArtsId = "d19390000",
+                }
+            },
+            {
+                "70097",//矮人矿工 Dwarf Miner
+                new GwentCard()
+                {
+                    CardId ="70097",
+                    Name="矮人矿工",
+                    Strength=6,
+                    Group=Group.Copper,
+                    Faction = Faction.ScoiaTael,
+                    CardUseInfo = CardUseInfo.MyRow,
+                    CardType = CardType.Unit,
+                    IsDoomed = false,
+                    IsCountdown = false,
+                    IsDerive = false,
+                    Categories = new Categorie[]{Categorie.Dwarf},
+                    Flavor = "xxxxx",
+                    Info = "手卡中每有一张矮人单位卡便获得1点强化",
+                    CardArtsId = "d19430000",
+                }
+            },
+            {
+                "70098",//维里赫德旅破坏者 Vrihedd Saboteur
+                new GwentCard()
+                {
+                    CardId ="70098",
+                    Name="维里赫德旅破坏者",
+                    Strength=1,
+                    Group=Group.Copper,
+                    Faction = Faction.ScoiaTael,
+                    CardUseInfo = CardUseInfo.MyRow,
+                    CardType = CardType.Unit,
+                    IsDoomed = false,
+                    IsCountdown = false,
+                    IsDerive = false,
+                    Categories = new Categorie[]{Categorie.Elf,Categorie.Soldier},
+                    Flavor = "xxxxx",
+                    Info = "部署：剩余卡组中每有一张精灵标签单位卡便获得1点增益",
+                    CardArtsId = "d20160000",
                 }
             },
         };

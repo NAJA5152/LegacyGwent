@@ -151,11 +151,15 @@ namespace Cynthia.Card.Server
 
         public bool AddDeck(string connectionId, DeckModel deck)
         {
+            if (deck.Leader == "12004")
+            {
+                return false;
+            }
             //添加卡组
             if (!_users.ContainsKey(connectionId))
                 return false;
             var user = _users[connectionId];
-            if (user.Decks.Count >= 100)
+            if (user.Decks.Count >= 1000)
                 return false;
             //if (!deck.IsBasicDeck())
             //return false;
@@ -248,11 +252,12 @@ namespace Cynthia.Card.Server
             return @"这里是是DIY-PTR服务器,祝大家玩得开心~
 查看实时在线人数可查网站http://cynthia.ovyno.com:5005
 欢迎加群闲聊约战~关注第一消息
-群号:945408322
+群号: 949112936 （旧群945408322寄了）
 本作永久免费开源,详细欢迎入群了解
 
-输入密码ai/ai1/ai2即可挑战ai~(当有其他人匹配时优先玩家匹配)
+输入密码ai/ai1即可挑战ai~(当有其他人匹配时优先玩家匹配)
 ai密码后缀#f(如ai#f)即可强制挑战ai,不会进行玩家匹配
+ai列表：[ai:杰洛特希里]、[ai1：新兵训练]、[ai2：阿瓦拉克]、[ai3：奥贝伦王]、[ai4：铁隼佣兵团]、[ai5：猎龙人]
 
 注意事项: 
 1. 账号密码与原服务器分开，需要重新注册

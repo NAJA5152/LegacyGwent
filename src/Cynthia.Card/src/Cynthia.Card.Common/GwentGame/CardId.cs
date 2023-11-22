@@ -585,7 +585,15 @@ namespace Cynthia.Card
         public const string AuberonKing = "80001";
         public const string AuberonInvader = "80002";
         public const string AuberonConqueror = "80003";
+        public const string GasconIronFalcon = "89004";
+        public const string IronFalconInfantry = "89005";
+        public const string IronFalconTroubadour = "89006";
+        public const string IronFalconKnifeJuggler = "89007";
+        public const string SoldierTrain = "89008";
         public const string LyrianCavalry = "70094";
         public const string LyrianArbalest = "70095";
+        public const string TuirseachWarship = "70096";
+        public const string DwarfMiner = "70097";
+        public const string VriheddSaboteur = "70098";
     }
 }
