@@ -501,15 +501,10 @@ public class GameEvent : MonoBehaviour
         {
             var cards = onObjects.Where(x => x.GetComponent<CardMoveInfo>() != null);//获取物体集合中的所有卡牌
             selectCard = cards.Count() == 0 ? null : cards.OrderBy(x => x.transform.position.z).First().GetComponent<CardMoveInfo>();//选中第一张卡
-#if UNITY_ANDROID || UNITY_IOS
-            if (IsMobileClickDown && Input.touchCount == 0)
-            {
-                selectCard = null;
-            }
-#endif
         }
         var rows = onObjects.Where(x => x.GetComponent<CanDrop>() != null && x.GetComponent<CanDrop>().IsCanDrop);
         var dropTaget = rows.Count() != 0 ? rows.First().GetComponent<CanDrop>() : null;
+        var allRows = onObjects.Where(x => x.GetComponent<CanDrop>() != null);
         //----------------------------------------------
         switch (NowOperationType)
         {
@@ -518,7 +513,10 @@ public class GameEvent : MonoBehaviour
                 //if (IsOnCoin)按住硬币会执行的
                 if (DragCard == null)
                 {
-                    SelectCard = selectCard;
+                    if (!(IsMobileClickDown && allRows.Count() > 0))
+                    {
+                        SelectCard = selectCard;
+                    }
                     //如果没有在拖拽的卡牌
                     if (SelectCard == null && PassCoin.IsCanUse)
                     {
