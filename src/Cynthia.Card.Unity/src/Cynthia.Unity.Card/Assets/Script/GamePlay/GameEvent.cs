@@ -86,6 +86,7 @@ public class GameEvent : MonoBehaviour
 
     private GlobalUIService _uiService;
     public RopeController ropeController;
+    public bool IsMobileClickDown = false;
     private void Awake()
     {
         (sender, receiver) = Tube.CreateSimplex();
@@ -96,7 +97,7 @@ public class GameEvent : MonoBehaviour
     private void Start()
     {
         translator = DependencyResolver.Container.Resolve<LocalizationService>();
-        RighClickActive=false;
+        RighClickActive = false;
         NowOperationType = GameOperationType.None;
 
 #if UNITY_ANDROID || UNITY_IOS
@@ -165,7 +166,7 @@ public class GameEvent : MonoBehaviour
             }
             MyCemetery.IsCanDrop = true;
         }
-        
+
     }
     //当前正在拖拽的卡牌
     public CardMoveInfo DragCard
@@ -301,6 +302,11 @@ public class GameEvent : MonoBehaviour
     // #endif
     private void DownEffect()
     {
+#if UNITY_ANDROID || UNITY_IOS
+        IsMobileClickDown = true;
+        Update();
+        IsMobileClickDown = false;
+#endif
         switch (NowOperationType)
         {
             case GameOperationType.GetPassOrGrag:
@@ -341,6 +347,7 @@ public class GameEvent : MonoBehaviour
                 {   //直接pass信息并结束
                     await sender.SendAsync<RoundInfo>(new RoundInfo() { IsPass = true });
                     IsOnCoin = false;
+                    IsSelectCoin = false;
                     return;
                 }
                 if (DragCard == null) return;//没有拖拽的话,就没有什么效果
@@ -461,14 +468,14 @@ public class GameEvent : MonoBehaviour
                         Debug.Log("右键点击了卡牌");
                         var card = trueitem.First();
                         Debug.Log("卡牌On?:" + card.GetComponent<CardMoveInfo>().IsOn);
-                        #if !UNITY_ANDROID
-                            RightClickedCardID=card.GetComponent<CardShowInfo>().CurrentCore.CardId;
-                            if (!string.IsNullOrEmpty(RightClickedCardID))
-                            {
-                                RighClickActive=true;
-                                SceneManager.LoadScene("RightClick", LoadSceneMode.Additive);
-                            }
-                        #endif
+#if !UNITY_ANDROID && !UNITY_IOS
+                        RightClickedCardID = card.GetComponent<CardShowInfo>().CurrentCore.CardId;
+                        if (!string.IsNullOrEmpty(RightClickedCardID))
+                        {
+                            RighClickActive = true;
+                            SceneManager.LoadScene("RightClick", LoadSceneMode.Additive);
+                        }
+#endif
                         break;
                     default:
                         break;
@@ -494,6 +501,12 @@ public class GameEvent : MonoBehaviour
         {
             var cards = onObjects.Where(x => x.GetComponent<CardMoveInfo>() != null);//获取物体集合中的所有卡牌
             selectCard = cards.Count() == 0 ? null : cards.OrderBy(x => x.transform.position.z).First().GetComponent<CardMoveInfo>();//选中第一张卡
+#if UNITY_ANDROID || UNITY_IOS
+            if (IsMobileClickDown && Input.touchCount == 0)
+            {
+                selectCard = null;
+            }
+#endif
         }
         var rows = onObjects.Where(x => x.GetComponent<CanDrop>() != null && x.GetComponent<CanDrop>().IsCanDrop);
         var dropTaget = rows.Count() != 0 ? rows.First().GetComponent<CanDrop>() : null;
