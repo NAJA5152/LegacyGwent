@@ -8,7 +8,7 @@ namespace Cynthia.Card
     public static class GwentMap
     {
         //更新CardMap内容请务必将CardMapVersion更新
-        public static Version CardMapVersion { get; } = new Version(1, 0, 0, 115);
+        public static Version CardMapVersion { get; } = new Version(1, 0, 0, 116);
         public static IDictionary<string, int> CardIdMap { get; set; }
         public static string[] CardIdIndexMap { get; set; }
 
@@ -3412,7 +3412,7 @@ namespace Cynthia.Card
                 {
                     CardId ="23005", //Colossal Ifrit
                     Name="伊夫利特",
-                    Strength=9,
+                    Strength=8,
                     Group=Group.Silver,
                     Faction = Faction.Monsters,
                     CardUseInfo = CardUseInfo.MyRow,
@@ -11793,7 +11793,7 @@ namespace Cynthia.Card
                     Categories = new Categorie[] { Categorie.Special },
                     Flavor = "",
                     Info = "对一个敌军随机单位造成4点伤害。被丢弃时，再次触发此能力，并将1张“恐狼勇士”加入牌组。",
-                    CardArtsId = "202462",
+                    CardArtsId = "202464",
 					LinkedCards=new List<String> {"70040"},
                 }
             },
@@ -14780,7 +14780,7 @@ namespace Cynthia.Card
                 {
                     CardId ="70170", //Cloud Giant
                     Name="云顶巨人",
-                    Strength=10,
+                    Strength=9,
                     Group=Group.Gold,
                     Faction = Faction.Monsters,
                     CardUseInfo = CardUseInfo.MyRow,
@@ -14813,6 +14813,90 @@ namespace Cynthia.Card
                     Flavor = "一条结实的皮革腰带，显然是为泰坦所打造，至今没有谁的躯干能与之匹配。尽管穿上后可以获得巨人般的神力，却无法获得巨人般的体型。",
                     Info = "使一名友方单位获得等同于其基础战力的增益，如果该单位是食人魔，则先强化2点。",
                     CardArtsId = "203266",
+					LinkedCards=new List<String> {},
+                }
+            },
+                        {
+                "70172",
+                new GwentCard()
+                {
+                    CardId ="70172", //Princess
+                    Name="公主",
+                    Strength=3,
+                    Group=Group.Silver,
+                    Faction = Faction.Neutral,
+                    CardUseInfo = CardUseInfo.MyRow,
+                    CardType = CardType.Unit,
+                    IsDoomed = false,
+                    IsCountdown = false,
+                    IsDerive = false,
+                    Categories = new Categorie[]{ Categorie.Beast},
+                    Flavor = "你有萝卜所具备的一切美德一沉默寡言",
+                    Info = "生成一-头“熊”，同排存在猎魔人时，改为生成“狂暴的熊”",
+                    CardArtsId = "c10004000",
+					LinkedCards=new List<String> {"15010","65002"},
+                }
+            },
+            {
+                "70173",
+                new GwentCard()
+                {
+                    CardId ="70173", //DeadeyeAmbush
+                    Name="诱敌深入",
+                    Strength=0,
+                    Group=Group.Copper,
+                    Faction = Faction.ScoiaTael,
+                    CardUseInfo = CardUseInfo.AnyPlace,
+                    CardType = CardType.Special,
+                    IsDoomed = false,
+                    IsCountdown = false,
+                    IsDerive = false,
+                    Categories = new Categorie[]{ Categorie.Special,Categorie.Item},
+                    Flavor = "慢点.....人类快把你追丢了",
+                    Info = "选择一个己方单位向下移动一排并增益5点，选择一个敌方单位,将其移至敌方近战排并造成5点伤害",
+                    CardArtsId = "202184",
+					LinkedCards=new List<String> {},
+                }
+            },
+            {
+                "70174",
+                new GwentCard()
+                {
+                    CardId ="70174", //MageInfiltrator
+                    Name="法师渗透者",
+                    Strength=2,
+                    Group=Group.Copper,
+                    Faction = Faction.Nilfgaard,
+                    CardUseInfo = CardUseInfo.EnemyRow,
+                    CardType = CardType.Unit,
+                    IsDoomed = false,
+                    IsCountdown = false,
+                    IsDerive = false,
+                    Categories = new Categorie[]{ Categorie.Mage},
+                    Flavor = "据说她以前曾在帝国选美中夺得冠军",
+                    Info = "间谍。揭示两张对方卡牌，选择一张已揭示的对方铜色牌，生成具有佚亡的原始同名牌",
+                    CardArtsId = "202666",
+					LinkedCards=new List<String> {},
+                }
+            },
+            {
+                "70175",
+                new GwentCard()
+                {
+                    CardId ="70175", //Trapmaker
+                    Name="陷阱制造者",
+                    Strength=3,
+                    Group=Group.Copper,
+                    Faction = Faction.ScoiaTael,
+                    CardUseInfo = CardUseInfo.MyRow,
+                    CardType = CardType.Unit,
+                    IsDoomed = false,
+                    IsCountdown = false,
+                    IsDerive = false,
+                    Categories = new Categorie[]{ Categorie.Elf, Categorie.Support},
+                    Flavor = "手艺是厉害，可没谁会夸上一句，这些人就只会“啊啊啊，我的腿！”",
+                    Info = "当一张己方“伏击”单位触发，召唤一张本单位到己方同排。",
+                    CardArtsId = "203256",
 					LinkedCards=new List<String> {},
                 }
             },
