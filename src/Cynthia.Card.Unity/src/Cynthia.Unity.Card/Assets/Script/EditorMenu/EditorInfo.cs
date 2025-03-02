@@ -16,8 +16,12 @@ using UnityEngine.Events;
 using static UnityEngine.UI.Scrollbar;
 using Cynthia.Card.Common.Extensions;
 using Microsoft.AspNetCore.SignalR.Client;
+using UnityEngine.SceneManagement;
 public class EditorInfo : MonoBehaviour
 {
+    private string LastHoveredCard;
+    //static public bool RighClickActive;
+    public static string RightClickedCardID;
     //展示卡牌相关
     public ArtCard EditorArtCard;
     public ArtCard ShowArtCard;
@@ -102,6 +106,9 @@ public class EditorInfo : MonoBehaviour
     public GameObject DeckCodeInputBackGround;
     public InputField DeckCodeInputName;
     public InputField DeckCodeInputCode;
+    // mobile right click
+    private float pressTime = 0;
+    private bool IsRightClickMobile = false;
     //------------------------------------------------
     private LocalizationService _translator;
 
@@ -308,7 +315,9 @@ public class EditorInfo : MonoBehaviour
             if (x.Id != "blacklist")
             {
                 var deck = Instantiate(_deckPrefabMap[GwentMap.CardMap[x.Leader].Faction]);
+                string leaderartid = GwentMap.CardMap[x.Leader].CardArtsId;
                 deck.GetComponent<DeckShowInfo>().SetDeckInfo(x.Name, x.IsBasicDeck() || x.IsSpecialDeck() || (x.IsBlacklist() && x.Id == "blacklist"));
+                deck.GetComponent<DeckEditorMiniatures>().SetMiniatureArt(leaderartid);
                 deck.GetComponent<EditorShowDeck>().Id = x.Id;
                 deck.transform.SetParent(ShowDecksContext, false);
             }
@@ -451,14 +460,61 @@ public class EditorInfo : MonoBehaviour
         {
             EditorArtCard.CurrentCore = card;
             EditorArtCard.gameObject.SetActive(isOver);
+            LastHoveredCard=card.CardId;
         }
         else if (EditorStatus == EditorStatus.ShowCards)
         {
             ShowArtCard.CurrentCore = card;
             ShowArtCard.gameObject.SetActive(isOver);
+            LastHoveredCard=card.CardId;
         }
+        //Debug.Log("LAST HOVERED: "+LastHoveredCard);
     }
-
+    private void Update()
+    {
+#if UNITY_ANDROID || UNITY_IOS
+        if (Input.touchCount <= 0) return;
+        var touch = Input.GetTouch(0);
+        switch(touch.phase)
+        {
+            case TouchPhase.Began:
+                pressTime = 0;
+                IsRightClickMobile = false;
+                break;
+            case TouchPhase.Stationary:
+                pressTime += Time.deltaTime;
+                if (pressTime > 1f)
+                {
+                    IsRightClickMobile = true;
+                    pressTime = 0;
+                }
+                break;
+            case TouchPhase.Moved:
+                pressTime = 0;
+                IsRightClickMobile = false;
+                break;
+            case TouchPhase.Ended:
+                IsRightClickMobile = false;
+                pressTime = 0;
+                break;
+            case TouchPhase.Canceled:
+                IsRightClickMobile = false;
+                pressTime = 0;
+                break;
+        }
+#endif
+        if (Input.GetMouseButtonDown(1) || IsRightClickMobile)
+        {
+            if (EditorArtCard.gameObject.activeSelf || ShowArtCard.gameObject.activeSelf)
+            {
+                RightClickedCardID = LastHoveredCard;
+                Debug.Log("Right Clicked ID: "+RightClickedCardID);
+                //RighClickActive=true;
+                SceneManager.LoadScene("RightClick", LoadSceneMode.Additive);
+            }
+        }        
+    }
+            
     public void ClickSwitchUICard(CardStatus card)
     {
         if (EditorStatus == EditorStatus.SwitchFaction)

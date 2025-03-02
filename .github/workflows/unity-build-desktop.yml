@@ -8,7 +8,7 @@ env:
 jobs:
   buildForAllSupportedPlatforms:
     name: Build for ${{ matrix.targetPlatform }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
@@ -21,7 +21,7 @@ jobs:
         with:
           fetch-depth: 0
           lfs: true
-      - uses: actions/cache@v2
+      - uses: actions/cache@v4
         with:
           path: src/Cynthia.Card.Unity/src/Cynthia.Unity.Card/Library
           key: Library-${{ matrix.targetPlatform }}
@@ -40,7 +40,7 @@ jobs:
           projectPath: src/Cynthia.Card.Unity/src/Cynthia.Unity.Card
           buildName: DiyGwent-${{ matrix.targetPlatform }}
           allowDirtyBuild: true
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: DiyGwent-${{ matrix.targetPlatform }}
           path: build/${{ matrix.targetPlatform }}

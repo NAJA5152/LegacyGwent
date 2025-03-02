@@ -11,12 +11,12 @@ namespace Cynthia.Card
         public bool IsUse { get; set; } = false;  
         public override async Task<int> CardUseEffect()
         {
+            await Card.Effect.SetCountdown(offset: -1);
             if (IsUse || (Game.PlayerBaseDeck[PlayerIndex].Deck.Any(x => x.IsAnyGroup(Group.Gold,Group.Silver))))
             {
                 return 0;
             }
             IsUse = true;
-            await Card.Effect.SetCountdown(offset: -1);
             await Game.CreateCard(CardId.StraysofSpalla, PlayerIndex, new CardLocation(RowPosition.MyStay, 0));
             for (var i = 0; i < 2; i++)
             {

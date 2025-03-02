@@ -43,6 +43,7 @@ namespace Cynthia.Card.Server
         public bool[] IsPlayersMulligan { get; set; } = new bool[2] { false, false };
         public int Player1Index { get; } = 0;
         public int Player2Index { get; } = 1;
+        public int BalancePoint;
         public IList<Viewer> ViewList { get; set; } = new List<Viewer>();
         public IList<Operation<ServerOperationType>>[] PlayerToResendToViewerInfo { get; set; } = new IList<Operation<ServerOperationType>>[2]
         {
@@ -123,11 +124,12 @@ namespace Cynthia.Card.Server
             playerIndex = GameRound.ToPlayerIndex(this);
             RedCoin[0] = playerIndex;
             balancePoint = Math.Max(result2, result1);
+            BalancePoint = balancePoint;
             if (balancePoint != 0)
             {
+                // Console.WriteLine("land set to" + balancePoint);
                 var newCard = await CreateCard(cardId, playerIndex, new CardLocation(RowPosition.MyRow1, 0), false);
                 newCard.Status.Strength = balancePoint;
-
                 // 这里移走了佚亡，是因为需要卡牌在墓地触发效果。效果触发完后，再加上佚亡。
                 newCard.Status.IsImmue = true;
                 await ShowCardNumberChange(newCard, balancePoint, NumberType.White);
@@ -275,6 +277,12 @@ namespace Cynthia.Card.Server
             await SendEvent(new AfterRoundOver(RoundCount, player1PlacePoint, player2PlacePoint, player1PlacePoint == player2PlacePoint ? (int?)null : (player1PlacePoint > player2PlacePoint ? Player1Index : Player2Index)));
             //888888888888888888888888888888888888888888888888888888888888888888888888
             await SendBigRoundEndToCemetery();//将所有牌移到墓地
+            // if not round 1 do not display coin points
+            // Console.WriteLine("reset coin to 0");
+            await Players[Player1Index].SendAsync(ServerOperationType.SetMyLand, 0);
+            await Players[Player1Index].SendAsync(ServerOperationType.SetEnemyLand, 0);
+            await Players[Player2Index].SendAsync(ServerOperationType.SetMyLand, 0);
+            await Players[Player2Index].SendAsync(ServerOperationType.SetEnemyLand, 0);
             //清空所有场上的牌
         }
         //进行一轮回合
@@ -358,6 +366,16 @@ namespace Cynthia.Card.Server
             //双方轮流进行游戏
             //1.根据GamRound进行一次流程
             await SendEvent(new BeforeRoundStart(RoundCount));
+            if (player1Mulligan == 3 & player2Mulligan == 3)
+            {
+                var redIndex = RedCoin[0];
+                var blueIndex = AnotherPlayer(redIndex);
+                await Players[blueIndex].SendAsync(ServerOperationType.SetMyLand, 0);
+                await Players[blueIndex].SendAsync(ServerOperationType.SetEnemyLand, balancePoint);
+                await Players[redIndex].SendAsync(ServerOperationType.SetMyLand, balancePoint);
+                await Players[redIndex].SendAsync(ServerOperationType.SetEnemyLand, 0);
+            }
+
             while (await PlayerRound())
             {
                 //2.处理回合结束
@@ -370,7 +388,7 @@ namespace Cynthia.Card.Server
             await BigRoundEnd();
         }
 
-        public async Task RoundPlayCard(int playerIndex, RoundInfo cardInfo)//哪一位玩家,打出第几张手牌,打到了第几排,第几列
+        public async Task RoundPlayCard(int playerIndex, RoundInfo cardInfo, bool autoUpdateCemetery = true, bool autoUpdateDeck = true)//哪一位玩家,打出第几张手牌,打到了第几排,第几列
         {   //获取卡牌,手牌或者领袖,将那个GameCard存起来
             var card = cardInfo.HandCardIndex == -1 ? PlayersLeader[playerIndex][0] : PlayersHandCard[playerIndex][cardInfo.HandCardIndex];
             //如果打出的是领袖,那么设定领袖已经被打出
@@ -385,6 +403,10 @@ namespace Cynthia.Card.Server
                     await card.Effect.CardUse();
                 else
                     await card.Effect.Play(cardInfo.CardLocation);
+                if (autoUpdateCemetery)
+                    await SetCemeteryInfo();
+                if (autoUpdateDeck)
+                    await SetDeckInfo();
             }
         }
 
@@ -411,11 +433,22 @@ namespace Cynthia.Card.Server
             //抽卡限制,不至于抽空卡组
             if (player1Count > PlayersDeck[Player1Index].Where(filter).Count()) player1Count = PlayersDeck[Player1Index].Where(filter).Count();
             if (player2Count > PlayersDeck[Player2Index].Where(filter).Count()) player2Count = PlayersDeck[Player2Index].Where(filter).Count();
-            var player1Task = DrawCardAnimation(Player1Index, player1Count, Player2Index, player2Count, filter);
-            var player2Task = DrawCardAnimation(Player2Index, player2Count, Player1Index, player1Count, filter);
-            await Task.WhenAll(player1Task, player2Task);
-            await SetCountInfo();
-            return (player1Task.Result, player2Task.Result);
+            
+            // current round player draws first
+            if (GameRound == TwoPlayer.Player1)
+            {
+                var player1Result = await DrawCardAnimation(Player1Index, player1Count, Player2Index, player2Count, filter);
+                var player2Result = await DrawCardAnimation(Player2Index, player2Count, Player1Index, player1Count, filter);
+                await SetCountInfo();
+                return (player1Result, player2Result);
+            }
+            else
+            {
+                var player2Result = await DrawCardAnimation(Player2Index, player2Count, Player1Index, player1Count, filter);
+                var player1Result = await DrawCardAnimation(Player1Index, player1Count, Player2Index, player2Count, filter);
+                await SetCountInfo();
+                return (player1Result, player2Result);
+            }
         }
         //只有一个玩家抽卡
         public async Task<List<GameCard>> PlayerDrawCard(int playerIndex, int count = 1, Func<GameCard, bool> filter = null)
@@ -432,6 +465,28 @@ namespace Cynthia.Card.Server
         {
             filter ??= (x => true);
             var list = new List<GameCard>();
+
+            // tell opponent client I am going to draw cards
+            // it is necessary to tell opponent client first
+            // because AfterPlayerDraw must be call after all client update
+            for (var i = 0; i < myPlayerCount; i++)
+            {
+                await SendCardMove(enemyPlayerIndex, new MoveCardInfo()
+                {
+                    Source = new CardLocation() { RowPosition = RowPosition.EnemyDeck },
+                    Target = new CardLocation() { RowPosition = RowPosition.EnemyStay, CardIndex = 0 },
+                    Card = new CardStatus(PlayersFaction[myPlayerIndex])// { IsCardBack = true, DeckFaction = PlayersFaction[enemyPlayerIndex] }
+                });
+                await ClientDelay(400, enemyPlayerIndex);
+                await SendCardMove(enemyPlayerIndex, new MoveCardInfo()
+                {
+                    Source = new CardLocation() { RowPosition = RowPosition.EnemyStay, CardIndex = 0 },
+                    Target = new CardLocation() { RowPosition = RowPosition.EnemyHand, CardIndex = 0 },
+                });
+                await ClientDelay(300, enemyPlayerIndex);
+            }
+
+            // tell my client I am going to draw cards
             for (var i = 0; i < myPlayerCount; i++)
             {
                 await SendCardMove(myPlayerIndex, new MoveCardInfo()
@@ -453,22 +508,6 @@ namespace Cynthia.Card.Server
                 //88888888888888888888888888888888888888888888888888888
                 await SendEvent(new AfterPlayerDraw(myPlayerIndex, drawcard, null));
                 //88888888888888888888888888888888888888888888888888888
-            }
-            for (var i = 0; i < enemyPlayerCount; i++)
-            {
-                await SendCardMove(myPlayerIndex, new MoveCardInfo()
-                {
-                    Source = new CardLocation() { RowPosition = RowPosition.EnemyDeck },
-                    Target = new CardLocation() { RowPosition = RowPosition.EnemyStay, CardIndex = 0 },
-                    Card = new CardStatus(PlayersFaction[enemyPlayerIndex])// { IsCardBack = true, DeckFaction = PlayersFaction[enemyPlayerIndex] }
-                });
-                await ClientDelay(400, myPlayerIndex);
-                await SendCardMove(myPlayerIndex, new MoveCardInfo()
-                {
-                    Source = new CardLocation() { RowPosition = RowPosition.EnemyStay, CardIndex = 0 },
-                    Target = new CardLocation() { RowPosition = RowPosition.EnemyHand, CardIndex = 0 },
-                });
-                await ClientDelay(300, myPlayerIndex);
             }
             return list;
         }
@@ -963,7 +1002,7 @@ namespace Cynthia.Card.Server
         }
         public async Task SetDeckInfo(int playerIndex)
         {
-            await Players[playerIndex].SendAsync(ServerOperationType.SetMyDeck, PlayersDeck[playerIndex].Select(x => new CardStatus(x.Status.CardId)).OrderBy(x => x.CardId).OrderByDescending(x => x.Group).ThenByDescending(x => x.Strength).ToList());
+            await Players[playerIndex].SendAsync(ServerOperationType.SetMyDeck, PlayersDeck[playerIndex].Select(x => x.Status).OrderBy(x => x.CardId).OrderByDescending(x => x.Group).ThenByDescending(x => x.Strength).ToList());
         }
         public async Task SetDeckInfo()
         {

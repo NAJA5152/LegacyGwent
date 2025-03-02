@@ -1,7 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Alsein.Extensions;
-
 namespace Cynthia.Card
 {
     [CardEffectId("70116")]//尖啸女海妖 DeafeningSiren
@@ -10,16 +9,11 @@ namespace Cynthia.Card
         public DeafeningSiren(GameCard card) : base(card) { }
         public async Task HandleEvent(AfterWeatherApply @event)
         {
-            if (@event.Type == RowStatus.TorrentialRain && @event.PlayerIndex == AnotherPlayer)
-
+            if (@event.Type == RowStatus.TorrentialRain && @event.PlayerIndex == AnotherPlayer && Card.Status.CardRow.IsInCemetery())
             {
-                if (@event.PlayerIndex != Card.PlayerIndex || !Card.Status.CardRow.IsInCemetery())
-                {
-                    await Card.Effect.Resurrect(Game.GetRandomCanPlayLocation(Card.PlayerIndex, false), Card);
-                }
-                
-                return;
+                await Card.Effect.Summon(Game.GetRandomCanPlayLocation(Card.PlayerIndex, false), Card);
             }
+            
             return;
         }
     }

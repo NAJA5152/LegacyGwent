@@ -10,9 +10,13 @@ using System.Threading.Tasks;
 using Assets.Script.Localization;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameCardShowControl : MonoBehaviour
 {
+    public string ClickedId;
+    public GameObject ArtCardIsShowed;
+    public int LastHoveredCard;
     public GameObject UICardPrefab;
     public GameObject NullCardPrefab;
     public RectTransform CardsContent;
@@ -50,7 +54,72 @@ public class GameCardShowControl : MonoBehaviour
     //
     private ITubeInlet sender;
     private ITubeOutlet receiver;
-    //
+    // mobile right click
+    private float pressTime = 0;
+    private bool IsRightClickMobile = false;
+    private bool DisableClickCard = false;
+    //TEST
+    private void OnMouseOver()
+    {
+#if UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX || UNITY_STANDALONE_LINUX
+        if (Input.GetMouseButtonDown(1))
+        {
+            if (ArtCardIsShowed.activeSelf)
+            {
+                if (_nowShowType == MenuShowType.UseCard)
+                {
+                    ClickedId = UseCardList[LastHoveredCard].CardId;
+                }
+                else if (_nowShowType == MenuShowType.EnemyCemetery)
+                {
+                    ClickedId  = EnemyCemetery[LastHoveredCard].CardId;
+                }
+                else if (_nowShowType == MenuShowType.MyCemetery)
+                {
+                    ClickedId  = MyCemetery[LastHoveredCard].CardId;
+                }
+                else if (_nowShowType == MenuShowType.MyDeck)
+                {
+                    ClickedId  = MyDeck[LastHoveredCard].CardId;
+                }
+                Debug.Log("RightClicked Card of ID: "+ClickedId);
+                GameEvent.RighClickActive=true;
+                GameEvent.RightClickedCardID=ClickedId;
+                SceneManager.LoadScene("RightClick", LoadSceneMode.Additive);
+            }
+            
+        }
+#elif UNITY_ANDROID || UNITY_IOS
+        if (IsRightClickMobile)
+        {
+            if (ArtCardIsShowed.activeSelf)
+            {
+                if (_nowShowType == MenuShowType.UseCard)
+                {
+                    ClickedId = UseCardList[LastHoveredCard].CardId;
+                }
+                else if (_nowShowType == MenuShowType.EnemyCemetery)
+                {
+                    ClickedId  = EnemyCemetery[LastHoveredCard].CardId;
+                }
+                else if (_nowShowType == MenuShowType.MyCemetery)
+                {
+                    ClickedId  = MyCemetery[LastHoveredCard].CardId;
+                }
+                else if (_nowShowType == MenuShowType.MyDeck)
+                {
+                    ClickedId  = MyDeck[LastHoveredCard].CardId;
+                }
+                Debug.Log("RightClicked Card of ID: "+ClickedId);
+                GameEvent.RighClickActive=true;
+                GameEvent.RightClickedCardID=ClickedId;
+                IsRightClickMobile = false;
+                SceneManager.LoadScene("RightClick", LoadSceneMode.Additive);
+            }            
+        }        
+#endif
+    }
+    //END TEST
 
     private void Awake()
     {
@@ -58,7 +127,47 @@ public class GameCardShowControl : MonoBehaviour
     }
     private LocalizationService _translator => DependencyResolver.Container.Resolve<LocalizationService>();
     private bool IsAutoPlay => DependencyResolver.Container.Resolve<GwentClientService>().IsAutoPlay;
+#if UNITY_ANDROID || UNITY_IOS    
+    private void Update()
+    {
 
+        if (Input.touchCount <= 0) return;
+    
+        var touch = Input.GetTouch(0);
+
+        switch(touch.phase)
+        {
+
+            case TouchPhase.Began:
+                pressTime = 0;
+                IsRightClickMobile = false;
+                break;
+            case TouchPhase.Stationary:
+                pressTime += Time.deltaTime;
+                if (pressTime > 1f)
+                {
+                    DisableClickCard = true; // disable click to avoid mulliganing when keeping a card pressed
+                    IsRightClickMobile = true;
+                    pressTime = 0;
+                }
+                break;
+            case TouchPhase.Moved:
+                pressTime = 0;
+                IsRightClickMobile = false;
+                break;
+            case TouchPhase.Ended:
+                IsRightClickMobile = false;
+                pressTime = 0;
+                DisableClickCard = false;
+                break;
+            case TouchPhase.Canceled:
+                IsRightClickMobile = false;
+                pressTime = 0;
+                DisableClickCard = false;
+                break;
+        }
+    }
+#endif
     //------------------------------------------------------------------------------------------
     public void OpenButtonClick()//显示卡牌
     {
@@ -101,6 +210,8 @@ public class GameCardShowControl : MonoBehaviour
         }
         else
         {
+            LastHoveredCard = index;
+
             if (_nowShowType == MenuShowType.UseCard)
             {
                 ArtCard.CurrentCore = UseCardList[index];
@@ -126,6 +237,7 @@ public class GameCardShowControl : MonoBehaviour
         switch (_nowUseMenuType)
         {
             case UseCardShowType.Mulligan:
+                if (DisableClickCard == true) break;
                 if (IsUseMenuShow)
                     await sender.SendAsync<int>(index);
                 break;
@@ -146,6 +258,7 @@ public class GameCardShowControl : MonoBehaviour
                 }
                 else
                 {
+                    if (DisableClickCard == true) break;
                     card.IsSelect = true;
                     NowSelect.Add(index);
                     if (NowSelect.Count >= NowSelectTotal)
